@@ -15,7 +15,11 @@ define $(PKG)_BUILD
     $(SED) -i 's/vs2008/vs2010/g' $(1)/ccutil/Makefile.am
     $(SED) -i 's/Windows\.h/windows\.h/g' $(1)/opencl/openclwrapper.cpp
     $(SED) -i 's/unsigned long int>(dawg_/uintptr_t>(dawg_/g' $(1)/cube/tess_lang_mod_edge.h 
-    cd '$(1)' && ./autogen.sh && ./configure \
+    cd '$(1)' && $(SED) -i 's/AC_CHECK_LIB(lept,pixCreate/#AC_CHECK_LIB(lept,pixCreate/g' configure.ac
+ 
+    cd '$(1)' && ./autogen.sh
+    
+    cd '$(1)' &&./configure \
         $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(1)' -j '$(JOBS)' install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
 
