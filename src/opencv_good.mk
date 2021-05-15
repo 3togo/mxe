@@ -8,8 +8,6 @@ $(PKG)_VERSION  := 4.5.2
 $(PKG)_CHECKSUM := be976b9ef14f1deaa282fb6e30d75aa8016a2d5c1f08e85795c235148940d753
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := opencv-$($(PKG)_VERSION).zip
-$(PKG)_CONTRIB_SUBDIR   := opencv-contrib-$($(PKG)_VERSION)
-$(PKG)_CONTRIB_FILE := $($(PKG)_CONTRIB_SUBDIR).zip
 $(PKG)_URL      := https://github.com/opencv/opencv/archive/refs/tags/$($(PKG)_VERSION).zip
 #$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/$(PKG)library/$(PKG)-unix/$($(PKG)_VERSION)/$($(PKG)_FILE)
 #$(PKG)_URL_2    := https://distfiles.macports.org/opencv/$($(PKG)_FILE)
@@ -25,17 +23,35 @@ endef
 # -DCMAKE_CXX_STANDARD=98 required for non-posix gcc7 build
 
 define $(PKG)_BUILD
-	#[ -f $(BUILD_DIR)/$($(PKG)_CONTRIB_FILE) ] || \
-	#wget https://github.com/opencv/opencv_contrib/archive/refs/tags/$($(PKG)_VERSION).zip -o $(BUILD_DIR)/$($(PKG)_CONTRIB_FILE)
-	unzip pkg/$($(PKG)_CONTRIB_FILE) -d $(SOURCE_DIR)/..
     # build
     cd '$(BUILD_DIR)' && '$(TARGET)-cmake' '$(SOURCE_DIR)' \
-      -DCMAKE_VERBOSE=ON \
+      -DWITH_QT=OFF \
+      -DWITH_OPENGL=ON \
       -DWITH_GSTREAMER=OFF \
+      -DWITH_GTK=OFF \
+      -DWITH_VIDEOINPUT=ON \
+      -DWITH_XINE=OFF \
+      -DBUILD_opencv_apps=OFF \
+      -DBUILD_DOCS=OFF \
+      -DBUILD_EXAMPLES=OFF \
+      -DBUILD_PACKAGE=OFF \
+      -DBUILD_PERF_TESTS=OFF \
+      -DBUILD_TESTS=OFF \
+      -DBUILD_WITH_DEBUG_INFO=OFF \
+      -DBUILD_FAT_JAVA_LIB=OFF \
+      -DBUILD_ZLIB=OFF \
+      -DBUILD_TIFF=OFF \
+      -DBUILD_JASPER=OFF \
+      -DBUILD_JPEG=OFF \
+      -DBUILD_WEBP=OFF \
+      -DBUILD_PROTOBUF=OFF \
+      -DPROTOBUF_UPDATE_FILES=ON \
+      -DBUILD_PNG=OFF \
+      -DBUILD_OPENEXR=OFF \
+      -DCMAKE_VERBOSE=ON \
       -DCMAKE_CXX_STANDARD=11 \
       -DOPENCV_GENERATE_PKGCONFIG=YES \
-      -DOPENCV_EXTRA_MODULES_PATH=../$($(PKG)_CONTRIB_SUBDIR)
-      #-DCMAKE_CXX_FLAGS='-D_WIN32_WINNT=0x0500'
+      -DCMAKE_CXX_FLAGS='-D_WIN32_WINNT=0x0500'
 
     # install
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' VERBOSE=1
